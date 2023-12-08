@@ -1,0 +1,12 @@
+[package]
+name = "uidb"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+clap = { version = "4.4.11", features = ["cargo"] }
+crossterm = "0.27.0"
+lazy_static = "1.4.0"
+ratatui = "0.24.0"
+tui-textarea = "0.4.0"
+uiua = "0.6.1"
