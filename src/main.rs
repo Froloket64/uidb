@@ -188,8 +188,8 @@ fn main() -> std::io::Result<()> {
     let mut history = <Vec<Vec<Value>>>::new();
     let mut stack: Vec<Value>;
 
-    uiua.load_str(&spans_str[0..=span_i].join("\n"))
-        .expect("failed to execute Uiua src_pane");
+    uiua.load_str(&spans_str[0])
+        .expect("failed to execute Uiua code");
 
     stack = uiua.take_stack();
     history.push(stack.clone());
@@ -243,7 +243,7 @@ fn main() -> std::io::Result<()> {
                                     stack = history[span_i].clone();
                                 } else {
                                     uiua.load_str(&spans_str[0..=span_i].join("\n"))
-                                        .expect("failed to execute Uiua src_pane");
+                                        .expect("failed to execute Uiua code");
 
                                     stack = uiua.take_stack();
                                     history.push(stack.clone());
