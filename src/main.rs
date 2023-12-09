@@ -40,7 +40,6 @@ lazy_static! {
         Mutex::new(File::create(LOG_FILE_NAME).expect("failed to create log file")); // TODO: Handle gently
 }
 
-const FILE: &'static str = "./complex.ua";
 const HIGHLIGHT_STYLE: Style = Style::new().bg(Color::Rgb(80, 73, 69));
 const LOG_FILE_NAME: &'static str = "./log.txt";
 
