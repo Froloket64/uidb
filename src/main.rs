@@ -72,7 +72,7 @@ fn prepare_ast(ast: Vec<Item>) -> Vec<CodeSpan> {
         .collect()
 }
 
-fn highlight_multiline_token<'a>(src: &'a String, span: &'a CodeSpan) -> Vec<Line<'a>> {
+fn highlight_multiline_token<'a>(src: &'a String, span: &CodeSpan) -> Vec<Line<'a>> {
     src.lines()
         .enumerate()
         .map(|(i, l)| {
@@ -86,7 +86,7 @@ fn highlight_multiline_token<'a>(src: &'a String, span: &'a CodeSpan) -> Vec<Lin
         .collect()
 }
 
-fn highlight_token<'a>(src: &'a String, span: &'a CodeSpan) -> Vec<Line<'a>> {
+fn highlight_token<'a>(src: &'a String, span: &CodeSpan) -> Vec<Line<'a>> {
     let mut char_count = 0_usize;
 
     src.lines()
