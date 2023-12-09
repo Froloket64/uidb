@@ -15,7 +15,7 @@ use ratatui::{
 use uiua::{
     self,
     ast::{Item, Word},
-    CodeSpan, Uiua,
+    CodeSpan, Uiua, Value,
 };
 
 use std::{
@@ -181,21 +181,17 @@ fn main() -> std::io::Result<()> {
     let mut terminal = Terminal::new(CrosstermBackend::new(stdout()))?;
     terminal.clear()?;
 
-    let mut span_i = 0;
-    let mut src_highlighted = Text::from(src.clone());
-
     let block = Block::default()
         .title_style(Style::default().add_modifier(Modifier::BOLD))
         .borders(Borders::ALL)
         .border_type(BorderType::Rounded);
 
+    let mut span_i = 0;
+    let mut src_highlighted = Text::from(src.clone());
+    let mut stack = <Vec<Value>>::new();
+
     loop {
         let src_pane = Paragraph::new(src_highlighted.clone()).block(block.clone().title("Code"));
-
-        uiua.load_str(&spans_str[0..=span_i].join("\n"))
-            .expect("failed to execute Uiua src_pane");
-
-        let stack = uiua.take_stack();
 
         let stack_pane = Paragraph::new(
             stack
@@ -237,6 +233,11 @@ fn main() -> std::io::Result<()> {
                                 };
 
                                 src_highlighted = Text::from(lines);
+
+                                uiua.load_str(&spans_str[0..=span_i].join("\n"))
+                                    .expect("failed to execute Uiua src_pane");
+
+                                stack = uiua.take_stack();
                             }
                         }
                         KeyCode::Char('l') => {
@@ -253,6 +254,11 @@ fn main() -> std::io::Result<()> {
                                 };
 
                                 src_highlighted = Text::from(lines);
+
+                                uiua.load_str(&spans_str[0..=span_i].join("\n"))
+                                    .expect("failed to execute Uiua src_pane");
+
+                                stack = uiua.take_stack();
                             }
                         }
                         _ => (),
