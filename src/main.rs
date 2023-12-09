@@ -172,9 +172,6 @@ fn main() -> std::io::Result<()> {
         .map(|s| s.as_str().to_owned())
         .collect();
 
-    // // OPTIM: Use history to save resourses when stepping back
-    // // let mut history = Vec::<Vec<Value>>::new();
-
     stdout().execute(EnterAlternateScreen)?;
     enable_raw_mode()?;
 
@@ -188,7 +185,14 @@ fn main() -> std::io::Result<()> {
 
     let mut span_i = 0;
     let mut src_highlighted = Text::from(src.clone());
-    let mut stack = <Vec<Value>>::new();
+    let mut history = <Vec<Vec<Value>>>::new();
+    let mut stack: Vec<Value>;
+
+    uiua.load_str(&spans_str[0..=span_i].join("\n"))
+        .expect("failed to execute Uiua src_pane");
+
+    stack = uiua.take_stack();
+    history.push(stack.clone());
 
     loop {
         let src_pane = Paragraph::new(src_highlighted.clone()).block(block.clone().title("Code"));
@@ -234,10 +238,16 @@ fn main() -> std::io::Result<()> {
 
                                 src_highlighted = Text::from(lines);
 
-                                uiua.load_str(&spans_str[0..=span_i].join("\n"))
-                                    .expect("failed to execute Uiua src_pane");
+                                if span_i < history.len() {
+                                    // ~OPTIM: Remove cloning
+                                    stack = history[span_i].clone();
+                                } else {
+                                    uiua.load_str(&spans_str[0..=span_i].join("\n"))
+                                        .expect("failed to execute Uiua src_pane");
 
-                                stack = uiua.take_stack();
+                                    stack = uiua.take_stack();
+                                    history.push(stack.clone());
+                                }
                             }
                         }
                         KeyCode::Char('l') => {
@@ -255,10 +265,7 @@ fn main() -> std::io::Result<()> {
 
                                 src_highlighted = Text::from(lines);
 
-                                uiua.load_str(&spans_str[0..=span_i].join("\n"))
-                                    .expect("failed to execute Uiua src_pane");
-
-                                stack = uiua.take_stack();
+                                stack = history[span_i].clone();
                             }
                         }
                         _ => (),
